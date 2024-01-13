@@ -1,0 +1,118 @@
+//::::Breezy Mountain::::\\
+
+//A spin-off of the challenge "Shooting Star" in Khan Academy
+      //Instead of just creating a moving object, I created multiple moving objects
+            //It became a cartoony little landscape of mountains and a rising moon
+
+//thank you John Tischke for the trigonometry used in spin-off for "Incrementing shortcuts."
+//thank you Bob Lyons for noLoop command. I see u in those comments!
+
+var xPos = 24;
+var yPos = 24;
+var w = 255;
+var i = 99/100;
+var i1 = 75/100;
+var i2 = 50/100;
+var i3 = 25/100;
+
+var moonX = 65;
+var moonY = 375;
+
+var shadX = 71;
+var shadY = 380;
+
+draw = function() {
+    
+    //sky
+    background(29, 40, 115);
+    
+    //Shooting Star
+    fill(sin(4*xPos)*255, cos(4*xPos)*255, 255);
+    ellipse(xPos, yPos, 10, 10);
+
+    //moon shadow
+    fill(0);
+    ellipse(shadX,shadY,215,200);
+    
+    //moon
+    fill(250, 242, 135);
+    ellipse(moonX,moonY,215,200);
+    
+    //dookie clouds
+    noStroke();
+
+    fill(0, 0, 0); //shadows before object
+    ellipse(279, 119, 310, 26);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(285, 118, 310, 26);
+    
+    fill(0, 0, 0);
+    ellipse(272, 125, 250, 44);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(278, 122, 250, 44);
+    
+    fill(0);
+    ellipse(298, 131, 248, 48);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(301, 127, 244, 48);
+    
+    fill(0);
+    ellipse(270, 108, 176, 48);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(275, 105, 176, 48);
+    
+    fill(0);
+    ellipse(303, 116, 210, 48);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(308, 114, 212, 48);
+    
+    fill(0);
+    ellipse(303, 86, 161, 50);
+    fill(w*i2, w*i2, w*i2);
+    ellipse(308, 84, 161, 50);
+    
+    //snowcaps
+    fill(w, w, w);
+    ellipse(12, 434, 71, 237);
+    ellipse(62, 416, 99, 237);
+    ellipse(130, 383, 99, 237);
+    ellipse(197, 410, 99, 237);
+    
+    //mountain outline
+    fill(0);
+   
+    ellipse(197, 426, 112, 240);
+    ellipse(130, 397, 105, 235);
+    ellipse(64, 426, 109, 237);
+    ellipse(12, 444, 73, 237);
+    
+    //mountains
+    fill(46, 153, 0);
+    
+    ellipse(197, 428, 112, 240);
+    ellipse(130, 400, 104, 235);
+    ellipse(64, 428, 106, 237);
+    ellipse(12, 447, 71, 237);
+    
+    //river    
+    fill(0);
+    rect(-17, 380, 420, 27, 200);
+    fill(0, 17, 255);
+    rect(-17, 381, 420, 27, 200);
+    fill(0*i2, 17*i2, 255*i2);
+    rect(-17, 387, 420, 27, 200);
+    fill(0*i3, 17*i3, 255*i3);
+    rect(-17, 394, 420, 27, 200);
+        
+    xPos += 6;
+    yPos += 6;
+    moonY --;
+    shadY --;
+    
+    if (moonY === 75){
+        noLoop();}
+
+};
+
+
+
