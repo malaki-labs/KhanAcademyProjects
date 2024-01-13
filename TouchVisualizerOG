@@ -4,11 +4,11 @@
 
 //influenced by some trig formulas found in various spin-offs on Khan Academy's challenges and projects
         //math in school always gave me issues, but for some reason programming makes it easier
-  
+
+//Check out the code in action: https://www.khanacademy.org/computer-programming/touch-visualizer-og/5418843250671616  
 
 var i = 75/100;
 var i2 = 120*i;
-
 
 var x = 150 + (150/4);
 var y = x + (x/4);
@@ -17,7 +17,6 @@ var a = z + (z/4);
 var b = a + (a/4);
 var c = b + (b/4);
 
-
 mouseMoved = function() {
 
 noStroke();  
@@ -25,36 +24,29 @@ fill(sin(mouseY)*10, cos(mouseY)*10, sin(mouseY)*10);
 ellipse(150, 200, c, c);
 ellipse(212, 200, c, c);
 
-
 fill(sin(mouseY)*20, cos(mouseY)*20, sin(mouseY)*20);
 ellipse(150, 200, b, b);
 ellipse(212, 200, b, b);
-
 
 fill(sin(mouseY)*30, cos(mouseY)*30, sin(mouseY)*30);
 ellipse(150, 200, a, a);
 ellipse(212, 200, a, a);
 
-
 fill(sin(mouseY)*40, cos(mouseY)*40, sin(mouseY)*40);
 ellipse(150, 200, z, z);
 ellipse(212, 200, z, z);
-
 
 fill(sin(mouseY)*98, cos(mouseY)*54, sin(mouseY)*27);
 ellipse(150, 200, y, y);
 ellipse(212, 200, y, y);
 
-
 fill(sin(2*mouseX)*12, cos(2*mouseX)*105, sin(mouseX)*255);
 ellipse(150, 200, x, x);
 ellipse(212, 200, x, x);
 
-
 fill(sin(20*mouseY)*12, cos(4*mouseY)*105, sin(mouseY)*255);
 ellipse(150, 200, 150, 150);
 ellipse(212, 200, 150, 150);
-
 
 fill(sin(2*mouseX)*12, cos(2*mouseX)*105, sin(mouseX)*255);
 ellipse(150, 200, 120, 120);
