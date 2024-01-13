@@ -7,6 +7,8 @@
 //thank you John Tischke for the trigonometry used in spin-off for "Incrementing shortcuts."
 //thank you Bob Lyons for noLoop command. I see u in those comments!
 
+//Check out the code in action: https://www.khanacademy.org/computer-programming/breezy-mountain/5862038073819136
+
 var xPos = 24;
 var yPos = 24;
 var w = 255;
