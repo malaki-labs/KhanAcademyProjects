@@ -1,0 +1,12 @@
+//::::SUMTHIN GROOVY::::\\
+
+//A spinoff of the "Mouse Movement Mania" challenge in Khan Academy
+        //Not too many changes, but color selection produces a funky effect
+
+//Here is the code in action: https://www.khanacademy.org/computer-programming/sumthingroovy/4934778189824000
+
+draw = function() {
+    stroke(mouseX, mouseY, mouseX+mouseY);
+    fill(mouseX, 20, 115);
+    ellipse(mouseX, mouseY, mouseY, mouseX);
+};
