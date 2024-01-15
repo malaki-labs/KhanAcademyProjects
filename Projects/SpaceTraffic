@@ -1,0 +1,221 @@
+//::::SPACE TRAFFIC::::\\
+
+//A Spin-Off of the "Fish Tank" project in Khan Academy
+
+//Learners are required to create a fish tank and swimming fishes using animation and functional coding
+
+//I decided to make my fishes into UFOs and put the scene in space
+      //(mainly because proportioning triangles is a P.I.M.A.)
+
+//It ended up being quite a little project 
+
+//I think I'd like to take this concept and make it interactive one day :)
+      //(especially since now I know OOP [this code was created before that])
+
+//Check out the code in action: https://www.khanacademy.org/computer-programming/space-traffic/5687299787243520
+
+var space = color(11,0,54);
+var glass = color(147,219,215);
+
+//UFO 1
+var ufoX = 51;
+var ufoY = 240;
+var ufoW = 160;
+
+var beamFX = function(beamSpeed, r, g, b){
+    fill(sin(millis()/beamSpeed*0.5)*r, cos(millis()/beamSpeed*0.5)*g, sin(millis()/beamSpeed)*b) ;};
+
+var ufoBasic = function(xOff, yOff, r, g, b){
+    stroke(0, 0, 0);
+    strokeWeight(2);
+
+    //pit
+    fill(glass);
+    ellipse((ufoX+xOff),(ufoY - 1/13*ufoW)-yOff,ufoW*1/1.58,ufoW*1/3.1);
+    //body
+    fill(255, 0, 0);
+    ellipse((ufoX+xOff), ufoY-yOff, ufoW, ufoW*1/4);
+    //beam
+    beamFX(10,0,0,255);
+    ellipse((ufoX+xOff),(ufoY+1/15*ufoW)-yOff,ufoW*1/1.3,ufoW*1/8);
+};
+
+//UFO 2
+var ufoX2 = 51;
+var ufoY2 = 240;
+var ufoW2 = 134;
+
+var ufoBasic2 = function(xOff, yOff, r, g, b){
+    
+    stroke(0, 0, 0);
+    strokeWeight(2);
+
+    //pit
+    fill(glass);
+    ellipse((ufoX2+xOff),(ufoY2 - 1/13*ufoW2)-yOff,ufoW2*1/1.58,ufoW2*1/3.1);
+    //body
+    fill(r, g, b);
+    ellipse((ufoX2+xOff), ufoY2-yOff, ufoW2, ufoW2*1/4);
+    //beam
+    beamFX(5,0,0,255);
+    ellipse((ufoX2+xOff),ufoY2+1/15*ufoW2-yOff,ufoW2*1/1.3,ufoW2*1/8);
+
+};
+
+//UFO 3
+var ufoX3 = 51;
+var ufoY3 = 240;
+var ufoW3 = 134;
+
+
+var ufoBasic3 = function(xOff, yOff, r, g, b){
+    
+    stroke(0, 0, 0);
+    strokeWeight(2);
+
+    //pit
+    fill(glass);
+    ellipse((ufoX3+xOff),(ufoY3 - 1/13*ufoW3)-yOff,ufoW3*1/1.58,ufoW3*1/3.1);
+    //body
+    fill(r, g, b);
+    ellipse((ufoX3+xOff), ufoY3-yOff, ufoW3, ufoW3*1/4);
+    //beam
+    beamFX(15,0,0,255);
+    ellipse((ufoX3+xOff),(ufoY3+1/15*ufoW3)-yOff,ufoW3*1/1.3,ufoW3*1/8);
+
+};
+
+
+//Static UFO
+var ufoXs = random(20,350);
+var ufoYs = random(20,350);
+var ufoWs = 35;
+
+var ufoStatic = function(xOff, yOff, r, g, b){
+    stroke(0, 0, 0);
+    strokeWeight(2);
+
+    //pit
+    fill(glass);
+    ellipse((ufoXs+xOff),(ufoYs - 1/13*ufoWs)-yOff,ufoWs*1/1.58,ufoWs*1/3.1);
+    //body
+    fill(r, g, b);
+    ellipse((ufoXs+xOff), ufoYs-yOff, ufoWs, ufoWs*1/4);
+    //beam
+    beamFX(10,0,0,255);
+    ellipse((ufoXs+xOff),(ufoYs+1/15*ufoWs)-yOff,ufoWs*1/1.3,ufoWs*1/8);
+
+};
+
+var ufoHover = function(freq){
+ufoYs+=sin(millis()/freq);};
+
+//MOTHERSHIP
+var panelX = 232;
+var panelY = 200;
+var panelW = 18;
+var panelH = panelW*1.9;
+
+var mothership = function(){
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    
+    //beam
+    beamFX(18,0,0,255);
+    ellipse(panelX-panelW*1.7,panelY+panelW*1.5,panelW*5,panelH);
+      
+    //glass
+    fill(glass);
+    ellipse(panelX-panelW*1.7,panelY+panelW*1/5,panelW*5,panelH);
+    
+    rect(panelX-panelW,panelY,panelW,panelH);
+    rect(panelX-panelW*2,panelY,panelW,panelH);
+    rect(panelX-panelW*4,panelY,panelW,panelH);
+  
+    //panels
+    fill(113, 132, 184);
+    
+    rect(panelX,panelY,panelW,panelH);
+    rect(panelX-panelW*1.5,panelY,panelW,panelH);
+    rect(panelX-panelW*3, panelY ,panelW, panelH);
+    rect(panelX-panelW*4.5, panelY ,panelW,panelH);
+    
+    fill(86, 100, 138);
+    rect(panelX-panelW*5,panelY-panelW*1/5,panelW*6.5,panelW*1/2);
+        rect(panelX-panelW*5,panelY+panelW*1.5,panelW*6.5,panelW*1/2);
+
+panelX += 0.2;
+
+if (panelX > 600){
+    panelX -= 1000;}
+};
+
+//UFO Movement
+var ufoFWD = function(speed1,freq1,reset1,wRe1,speed2,freq2,reset2,wRe2, speed3, freq3, reset3, wRe3){ 
+//ufo1
+ufoX+=speed1;
+ufoY+=sin(millis()/freq1);
+
+    if (ufoX > 500){
+        ufoX -= reset1;
+        ufoW = ufoW/2;
+        if (ufoW<=1){
+            ufoW = ufoW * wRe1;
+        }
+    }
+
+//ufo2    
+ufoX2+=speed2;
+ufoY2+=sin(millis()/freq2);
+    
+    if (ufoX2 > 500){
+        ufoX2 -= reset2;
+        ufoW2 = ufoW2/2;
+        if (ufoW2<=1){
+            ufoW2 = ufoW2 * wRe2;
+        }
+    }
+    
+ufoX3-=speed3;
+ufoY3+=sin(millis()/freq3);
+    
+    if (ufoX3 < -500){
+        ufoX3 += reset3;
+        ufoW3 = ufoW3/2;
+        if (ufoW3<=1){
+            ufoW3 = ufoW3 * wRe3;
+            ufoX3 +=reset3;
+        }
+    }
+};
+      
+var mouseTracker = function(xSet){
+    var XY = mouseX + "," + mouseY;
+    fill(255,255,255);
+    ellipse(mouseX,mouseY,10,10);
+    text(XY,mouseX+xSet,mouseY);
+};
+   
+
+draw = function() {
+    background(space);
+    fill(133, 71, 44);
+   
+    ellipse(74,147, 150,150);
+    fill(44, 129, 135);
+    ellipse(300,364,300,300);
+ 
+    mothership();
+    ufoStatic(0,-22,0,103,44);
+    ufoStatic(42,0,241,0,200);
+    ufoStatic(-39,19,255,103,44);
+    ufoHover(3);
+    ufoBasic(0,44,57);
+    ufoFWD(6,5,600,150,10,10,600,100,1,20,1000,180);
+    ufoBasic2(0,150, 0,234,255);
+    ufoBasic3(0,-25,245,50,245);
+    fill(255, 0, 0);   
+   
+    mouseTracker(5);
+};
+
