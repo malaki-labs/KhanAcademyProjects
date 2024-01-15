@@ -1,0 +1,113 @@
+//::::SIMPLE CALCULATOR::::\\
+
+//Rudimentary coding exercise in functions
+      //non-interactive UI
+      //two numbers manipulated only by changing variable
+      //solves +,-,/,* all at once
+      //before learning loops, constraints
+          //minor issues with displaying larger numbers
+
+//View program here: https://www.khanacademy.org/computer-programming/simple-calculator/5086507833278464
+
+var x = 9;
+var y = 1;
+
+var add = function(num1, num2) {
+    return num1 + num2;
+};
+var subtract = function(num1, num2) {
+    return num1 - num2;
+};
+var multiply = function(num1, num2) {
+    return num1 * num2;
+};
+var divide = function(num1, num2) {
+    return num1 / num2;
+};
+
+var errorBox = function(errorX, errorY, errorW, errorH){ 
+fill(255, 255, 255);
+noStroke();
+rect(errorX, errorY, errorW, errorH);
+};
+
+var ans = function(ansY){ 
+stroke(0);
+fill(255, 255, 255);
+rect(185, ansY, 200, 17);
+};
+
+var addXY = function(num1, num2){
+
+fill(255, 0, 0);
+text(num1, 4, 20);
+errorBox(38,6, 200,17);
+fill(255, 0, 0);
+text("+", 41, 20);
+text(num2, 50, 20);
+errorBox(130, 6,200,17);
+};
+
+var subXY = function(num1, num2){
+
+fill(255, 0, 0);
+text(num1, 4, 50);
+errorBox(38,36, 200,17);
+fill(255, 0, 0);
+text("-", 42, 50);
+text(num2, 50, 50);
+errorBox(130, 36,200,17);
+};
+
+var mulXY = function(num1, num2){
+
+fill(255, 0, 0);
+text(num1, 4, 80);
+errorBox(38,66, 200,17);
+fill(255, 0, 0);
+text("*", 42, 82);
+text(num2, 50, 80);
+errorBox(130, 66, 200, 17);
+};
+
+var divXY = function(num1, num2){
+    
+fill(255, 0, 0);
+text(num1, 4, 110);
+errorBox(38,96, 200,17);
+fill(255, 0, 0);
+text("/", 42, 110);
+
+text(num2, 50, 110);
+errorBox(130, 96, 200, 17);
+
+};
+
+addXY(x,y);
+ans(6);
+fill(255, 0, 0);
+text(add(x,y), 188,20);
+errorBox(361,7,23,14);
+errorBox(386,7,23,14);
+
+
+subXY(x,y);
+ans(36);
+fill(255, 0, 0);
+text(subtract(x,y),188,50);
+errorBox(361,37,23,14);
+errorBox(386,37,23,14);
+
+mulXY(x,y);
+ans(66);
+fill(255, 0, 0);
+text(multiply(x,y),188,80);
+errorBox(361,67,23,14);
+errorBox(386,67,23,14);
+
+divXY(x,y);
+ans(96);
+fill(255,0,0);
+text(divide(x,y),188,110);
+errorBox(361,97,23,14);
+errorBox(386,97,23,14);
