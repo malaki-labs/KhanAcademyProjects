@@ -1,0 +1,115 @@
+//::::SPACE MONKEY::::\\
+
+//A very fine monkey indeed
+    //He floats through space with sheer determination
+        //Gliding by on his legendary, spectral aura
+
+//See the code in action: https://www.khanacademy.org/computer-programming/spacemonkey/5142515817431040
+
+var bodyX = 200;
+var bodyY = 699;
+var bodyW = 118;
+var bodyH = 106;
+var chestH = bodyH/2.25;
+var chestW = bodyW/2;
+
+
+draw = function() {
+    background(207, 254, 255);
+    stroke(145, 0, 255);
+    
+    //flame on
+   fill(sin(4*bodyY)*200, cos(4*bodyY)*205, sin(bodyY)*240); //shout out John Tischke "Incrementing Shortcuts" spin-off
+    triangle(bodyX+200, bodyY+200, bodyX-200, bodyY+200, bodyX, bodyY-210);
+    
+    //head fur
+    fill(0);
+    ellipse(bodyX, bodyY-129, chestW*1.3, bodyH/2);
+    ellipse(bodyX, bodyY-111, chestW*1.5, bodyH/2);
+    
+    //arms
+    rect(bodyX-110, bodyY-107, chestW+10, chestH/1.3, 150);
+    rect(bodyX-110, bodyY-71, chestW+-11, chestH, 150);
+    rect(bodyX-110, bodyY-29, chestW+-11, chestH, 150);
+    
+    rect(bodyX+38, bodyY-107, chestW+10, chestH/1.3, 150);
+    rect(bodyX+58, bodyY-72, chestW+-11, chestH, 150);
+    rect(bodyX+65, bodyY-29, chestW+-11, chestH, 150);
+    
+    //hands
+    stroke(240, 123, 0);
+    strokeWeight(2);
+    fill(240, 209, 36);
+    ellipse(bodyX+101, bodyY+11, chestW/1.5, chestH/1.5);
+    ellipse(bodyX-101, bodyY+10, chestW/1.5, chestH/1.5);
+    
+    //feet
+    fill(240, 209, 36);
+    ellipse(bodyX+40, bodyY+197, chestW/1.5, chestH+12);
+    ellipse(bodyX-40, bodyY+197, chestW/1.5, chestH+12);
+    
+    
+    //legs
+    stroke(145, 0, 255);
+    fill(0);
+    ellipse(bodyX+40, bodyY+140, chestW, chestH*2);
+    ellipse(bodyX-40, bodyY+140, chestW, chestH*2);
+    ellipse(bodyX+40, bodyY+70, chestW*1.3, chestH*2);
+    ellipse(bodyX-40, bodyY+70, chestW*1.3, chestH*2);
+    
+    //knees
+    stroke(240, 123, 0);
+    strokeWeight(2);
+    fill(240, 209, 36);
+    ellipse(bodyX+40, bodyY+114, chestW/1.5, chestH/1.5);
+    ellipse(bodyX-40, bodyY+114, chestW/1.5, chestH/1.5);
+    
+    //chest fur
+    stroke(145, 0, 255);
+    fill(0);
+    ellipse(bodyX+40, bodyY-70, chestW*1.5, chestH*1.5);
+    ellipse(bodyX-40, bodyY-70, chestW*1.5, chestH*1.5);
+    
+    //belly fur
+    ellipse(bodyX, bodyY, bodyW*1.5, bodyH*0.98);
+    
+    //eyes
+    fill(255, 255, 255);
+    ellipse(bodyX+15, bodyY-130, chestW/1.96, chestH/1.3);
+    ellipse(bodyX-15, bodyY-130, chestW/1.96, chestH/1.3);
+    
+    fill(0, 0, 0);
+    ellipse(bodyX+18, bodyY-138, chestW*0.08, chestH*0.16);
+    ellipse(bodyX-18, bodyY-138, chestW*0.08, chestH*0.16);
+    
+    
+    //inner body
+    fill(240, 209, 36);
+    stroke(240, 123, 0);
+    strokeWeight(2);
+    //belly
+    ellipse(bodyX, bodyY, bodyW, bodyH);
+    //chest
+    ellipse(bodyX+29, bodyY-70, chestW, chestH);
+    ellipse(bodyX-29, bodyY-70, chestW, chestH);
+    //belly button
+    ellipse(bodyX+1, bodyY+15, chestW*0.24, chestH*0.16);
+    fill(0);
+    ellipse(bodyX+1, bodyY+15, chestW*0.16, chestH*0.03);
+    
+    //mouth
+    fill(240, 209, 36);
+    ellipse(bodyX, bodyY-111, chestW, 35);
+    line(bodyX+7, bodyY-112, bodyX+23, bodyY-109);
+    ellipse(bodyX+9, bodyY-127, chestW*0.31, chestH*0.25);
+    ellipse(bodyX-9, bodyY-127, chestW*0.31, chestH*0.25);
+    fill(0, 0, 0);
+    ellipse(bodyX+9, bodyY-127, chestW*0.24, chestH*0.17);
+    ellipse(bodyX-9, bodyY-127, chestW*0.24, chestH*0.17);
+    
+    
+    bodyY=bodyY-1;
+    if (bodyY === -230){
+        bodyY=699; }
+
+};
