@@ -1,0 +1,79 @@
+var Ball = function(){
+
+    this.x = 150;
+    this.y = 150;
+    this.w = 20;
+    this.h = 20;
+};
+
+Ball.prototype.draw = function() {
+    ellipse(this.x, this.y, this.w, this.h);
+};
+
+Ball.prototype.move = function() {
+    this.x -= 1;
+};
+
+var HEALTHBAR = function(){
+
+    this.x = 10;
+    this.y = 10;
+    this.w = 5;
+    this.h = 10;
+    this.array = [];
+    this.counter = 0;
+    
+};
+
+HEALTHBAR.prototype.barOne = function(barX) {
+    
+    rect(barX,this.y,this.w,this.h);
+};
+
+HEALTHBAR.prototype.barArray = function() {
+    
+    for(var i = 10 ; i < 110 ; i+=5){
+        this.array.push(i);
+    }
+};
+
+HEALTHBAR.prototype.barRemove = function() {
+      
+           this.array[this.counter+(this.array.length-1)] = -400;
+           this.counter -= 1;
+};
+
+HEALTHBAR.prototype.barGone = function(){
+    
+    if(this.array[0] <= -400){text("SORRY. TRY AGAIN.", 10, 10);}
+    
+};
+
+
+var newHealth = new HEALTHBAR({});
+var ball = new Ball();
+
+newHealth.barArray();
+
+draw = function() {
+   
+background(255,255,255);
+
+for (var i = 0 ; i < newHealth.array.length ; i++){
+    fill((255-(i*10)), 0+(15*i), 0+(i));
+    newHealth.barOne(newHealth.array[i]);
+          
+}
+
+mouseClicked = function(){newHealth.barRemove();};
+
+newHealth.barGone();
+
+ball.draw();
+ball.move();
+
+if (ball.x === -1){
+    newHealth.barRemove();
+}
+
+};
