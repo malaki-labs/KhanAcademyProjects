@@ -1,0 +1,740 @@
+//:::: MAXIMUM HOPPY BEAVER EXTREME ::::\\
+
+//My spin-off of the "Hoppy Beaver" project on Khan Academy
+    //learners are tasked with adding more features to the base game
+    //the base game is basically a Flappy Bird clone,
+    //starting with the sprite and the "sticks" the player collects
+    //I restructured the entire orignal code, lifting mechanics
+        //IE sprite/stick collision and moving the scene
+    //and threw them into objects
+
+    //I added HEALTHBAR (when depleted, GAMEOVER)
+    //I added a difficulty modifier and sprite modifier
+        //changed through a SETTINGS screen
+        //higher difficulty means faster gaemplay, more health for balance
+        //players can choose their sprites (based on preloaded images in K.A.)
+    //I added more levels with WIN/LOSE states
+
+    //I learned so much about OOP and animation from this project
+    //I worked hard in integrating all of these little ideas into one game
+        //it ended being a lot harder than I thought getting all this interaction!
+    //also, ARRAYS WITHIN ARRAYS WITHIN ARRAYS -- woo ee!!
+
+    //Only thing really missing that I want to put in:
+        //"YOU BEAT THE GAME" kind of screen (it just freezes after last level)
+        //More levels
+        //Save HIGH SCORE - would have to be within the same session (as this is browser-based)
+
+//Check out the game in action: https://www.khanacademy.org/computer-programming/mhbx-2134/5183755348262912
+
+var diffCounter = 2;
+var f = createFont("serif");
+var sf = createFont("sans-serif");
+
+// ***SCENE OBJECT*** \\
+
+var Scene = function(config){     
+    this.background = config.background || color(227, 254, 255);
+    this.groundColor = config.groundColor || color(130, 79, 43);
+    this.img = config.img || ("cute/GrassBlock");
+    this.imgXs = [];
+    this.level = [];
+    this.current = config.level || 0;
+    this.win = config.win || false;
+    this.text = config.text || "";
+    this.button = config.button || function(){};    
+}; 
+
+    Scene.prototype.imgArray = function(){        
+        for (var i = 0; i < 25; i++) { 
+            this.imgXs.push(i*20);} 
+        
+        for (var i = 0 ; i < this.level.length ; i++){
+            this.level[i].imgArray(); }
+    };
+    
+    var gameWIN = new Scene ({
+        background: color(0, 191, 255), 
+        groundColor: color(0, 191, 255), 
+        img: ("cute/Blank"), 
+        win: true, 
+        text: function(){fill(0, 0, 0);textSize(25);text("VICTORY",150,175);}        
+    });
+    
+    var SWEET_VICTORY = new Scene ({
+        background: color(0,0,0), 
+        groundColor: color(0,0,0), 
+        img: ("cute/Blank"), 
+        text: function(){
+            fill(0, 191, 255);
+            textSize(25);
+            text("SWEET VICTORY", 125, 101);}            
+    });
+    
+    Scene.prototype.levelArray = function(){     
+    this.level = [
+        new Scene ({background: color(0), groundColor: color(0), img: ("cute/Blank")}),
+        new Scene ({background: color(0), groundColor: color(0), img: ("cute/Blank")}),
+        new Scene ({}),
+        gameWIN,
+        new Scene ({background: color(255, 194, 41), img: ("cute/DirtBlock")}),
+        gameWIN,
+        new Scene ({background: color(90, 9, 161), groundColor: color(28, 112, 4), img: ("cute/StoneBlockTall")}),
+        SWEET_VICTORY
+        ];     
+    };
+    
+    Scene.prototype.drawScene = function(){    
+        background(this.background);
+        noStroke();
+        fill(this.groundColor);
+        rectMode(CORNER);
+        rect(0, height*0.90, width, height*0.10);
+    
+        for (var i = 0 ; i < this.imgXs.length ; i++){
+            image(getImage(this.img), this.imgXs[i], height*0.85, 20, 20);
+            this.imgXs[i]-= 1;
+            if(this.imgXs[i] <= -20){
+                this.imgXs[i] = width;
+            }
+        }    
+    };
+    
+    Scene.prototype.showScore = function(score,arrayName,arrayLen){        
+        textSize(18);
+        fill(77, 77, 77);
+        text("Score: " + score, 10, 45);
+    };
+    
+    Scene.prototype.levelNext = function()         
+        if(this.current < this.level.length){ 
+            this.current+=1;
+        }    
+    };
+    
+    Scene.prototype.levelReset = function(){
+        this.current = 0;
+    };
+    
+    Scene.prototype.startGame = function(){
+        this.current+=2;
+    };
+    
+    Scene.prototype.gameOVER = function() {        
+        background(0, 0, 0);
+        fill(0, 191, 255);
+        text("SORRY. TRY AGAIN.", 125, 101);        
+
+    };
+    
+    var scene = new Scene ({});
+    
+    var sceneLoader = function(){        
+        scene = new Scene({});
+        scene.levelArray();
+        scene.imgArray();
+    };
+
+    scene.levelArray();
+    scene.imgArray(); 
+    
+// ***END SCENE OBJECT*** \\
+
+// ***HEALTHBAR OBJECT*** \\
+
+var HEALTHBAR = function(config){
+    this.x = 10;
+    this.y = 15;
+    this.w = 5;
+    this.h = 10;
+    this.array = [];
+    this.counter = 0;
+    this.difficulty = config.difficulty || diffCounter;    
+};
+
+    HEALTHBAR.prototype.barOne = function(barX) {        
+        rect(barX,this.y,this.w,this.h);
+    };
+
+    HEALTHBAR.prototype.barArray = function() {    
+        for(var i = 10 ; i < (110)*this.difficulty/2 ; i+=5){
+            this.array.push(i);
+        }
+    };
+    
+    HEALTHBAR.prototype.barFill = function() {
+        for (var i = 0; i < this.array.length; i++) {
+            stroke(0);
+            fill((255-(i*10)), 0+(15*i), 0+(i));
+            this.barOne(this.array[i]);
+        }
+    };
+
+    HEALTHBAR.prototype.barRemove = function() {        
+           this.array[this.counter+(this.array.length-1)] = -400;
+           this.counter -= 1;
+    };
+
+    HEALTHBAR.prototype.barGone = function(score){
+        if(this.array[0] === -400){
+		        return "GAME OVER";
+        }
+    };
+    
+    HEALTHBAR.prototype.barVictory = function() {        
+        if(this.array[0] === 10){            
+            return "ANOTHER DAY. ANOTHER VICTORY.";
+        }
+
+        else
+        {
+          if (this.barGone === "GAME OVER"){            
+              return false;
+          }
+        }    
+     };
+    
+    HEALTHBAR.prototype.barStickCheck = function(stick) {    
+        if(stick.x === -this.difficulty)
+            {this.barRemove();                  
+            if (this.difficulty <= 3){               
+               this.barRemove();
+            }
+        }    
+    };
+    
+    var newHealth = new HEALTHBAR({});
+    
+    var healthLoader = function(){        
+        newHealth = new HEALTHBAR({});
+        newHealth.barArray();
+    };
+    
+// ***END HEALTHBAR OBJECT*** \\
+
+// ***SPRITE OBJECT*** \\
+
+var Beaver = function(config) {
+    this.x = config.x || 200;
+    this.y = config.y || 300;
+    this.spriteImg = config.spriteImg || getImage("creatures/Hopper-Happy");
+    this.spriteJump = config.spriteJump || getImage("creatures/Hopper-Jumping");
+    this.spriteRest = config.spriteRest || getImage("creatures/Hopper-Happy");
+    this.sticks = 0;
+    this.difficulty = config.difficulty || diffCounter;    
+};
+
+    Beaver.prototype.draw = function() {
+        fill(255, 0, 0);
+        this.y = constrain(this.y, 0, height-50);
+        image(this.spriteImg, this.x, this.y, 40, 40);
+    };
+
+    Beaver.prototype.hop = function() {
+        this.spriteImg = this.spriteJump;
+        this.y -= 5*this.difficulty;
+    };
+
+    Beaver.prototype.fall = function() {
+        this.spriteImg = this.spriteRest;
+        this.y += 5*(this.difficulty/2) ;
+    };
+    
+    Beaver.prototype.jump = function() {
+        if (keyIsPressed && keyCode === 0) {
+            this.hop();
+        } 
+    
+        else
+        {
+            this.fall();
+        }    
+    };
+
+    Beaver.prototype.checkForStickGrab = function(stick) {
+        if ((stick.x >= this.x && stick.x <= (this.x + 40)) &&
+        (stick.y >= this.y && stick.y <= (this.y + 40))) 
+        {   stick.y = -400;
+            stick.x = -400;
+            this.sticks++;
+        }
+        
+        
+    };    
+
+    var beaver = new Beaver({});
+    var leafers = new Beaver({
+        spriteImg: getImage("avatars/leafers-tree"), 
+        spriteJump: getImage("avatars/leafers-ultimate"), 
+        spriteRest: getImage("avatars/leafers-tree")});
+    var pants = new Beaver({
+        spriteImg: getImage("avatars/mr-pants"), 
+        spriteJump: getImage("avatars/mr-pants-with-hat"), 
+        spriteRest: getImage("avatars/mr-pants")});
+    
+    var spriteArray = [beaver, leafers, pants];
+    var spriteSelect = 0;
+    
+    var spriteUP = function(){
+        if (spriteSelect < spriteArray.length-1){
+            spriteSelect++;
+        }
+    };
+    var spriteDOWN = function(){
+        if (spriteSelect > 0){
+            spriteSelect--;
+        }
+    };
+    
+// ***END SPRITE OBJECT***
+
+// ***STICK OBJECT***
+
+var Stick = function(config) {    
+    this.x = config.x || 500;
+    this.y = config.y || 500;
+    this.array = config.array || [];
+    this.difficulty = config.difficulty || diffCounter;  
+};
+
+
+    Stick.prototype.setArray = function(SIZE, xOffset, yMax) {
+        for (var i = 0 ; i < (SIZE*(this.difficulty/2)); i++){
+            this.array.push(new Stick({x: i * this.x + xOffset, y: random(this.y,260-(this.difficulty*5)), difficulty: this.difficulty}));
+        }
+    };
+
+    Stick.prototype.draw = function() {
+        fill(89, 71, 0);
+        rectMode(CENTER);
+        stroke(0);
+        rect(this.x, this.y, 5, 40);
+    };
+
+
+    Stick.prototype.fly = function() {
+        this.x -= this.difficulty;         
+    };
+    
+    var stickGroup = [
+        new Stick({x: 500,y: 500}),
+        new Stick({x: 500,y: 500}), 
+        new Stick ({x: 40,y: 20}), 
+        new Stick ({x: 500,y: 500}), 
+        new Stick ({x: 40,y: 20}), 
+        new Stick ({x: 500,y: 500}), 
+        new Stick({x: 40,y: 20})
+        ];
+        
+    var stickGroupReset = function(){    
+        stickGroup = [
+        new Stick({x: 500,y: 500}),
+        new Stick({x: 500,y: 500}), 
+        new Stick ({x: 40,y: 20}), 
+        new Stick ({x: 500,y: 500}), 
+        new Stick ({x: 40,y: 20}), 
+        new Stick ({x: 500,y: 500}), 
+        new Stick({x: 40,y: 20})
+        ];    
+    };
+        
+    var stickLoader = function(){
+        for (var i = 0 ; i < stickGroup.length; i++){
+            stickGroup[i].setArray(40+(i*10),500,200);
+        }
+    };
+    
+    var LAST_STICK = stickGroup[scene.current].array[stickGroup[scene.current].array.length-1];
+    
+    var lastStickReset = function(){
+        LAST_STICK = stickGroup[scene.current].array[stickGroup[scene.current].array.length-1];
+        return LAST_STICK;
+    };
+    
+// ***END STICK OBJECT** \\
+    
+// ***BUTTON OBJECT** \\
+    
+var Button = function(config){
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 62.5;
+    this.height = config.height || 31.25;
+    this.onClick = config.onClick || function() {};
+    this.msg = config.msg || function(){};
+    this.color = config.color || color(130,79,43);
+    
+    this.triX1 = this.x+30;
+    this.triY1 = (this.y + (this.width/8))+17;
+    this.triX2 = (this.x) - (this.width/4)+30;
+    this.triY2 = this.y - (this.height/4)+17;
+    this.triX3 = this.x + (this.width/4)+30;
+    this.triY3 = this.y - (this.width/8)+17;
+};
+
+    Button.prototype.drawBLANK = function() {    
+        fill(this.color);
+        rectMode(CORNER);
+        rect(this.x, this.y, this.width, this.height, 25);
+    };
+
+    Button.prototype.drawDOWN = function() {    
+        fill(this.color);
+        rectMode(CORNER);
+        rect(this.x, this.y, this.width, this.height, 25);
+        fill(252, 245, 111);
+        triangle(this.triX1, this.triY1, this.triX2, this.triY2, this.triX3, this.triY3);
+    };
+
+    Button.prototype.drawUP = function() {    
+        fill(this.color);
+        rectMode(CORNER);
+        rect(this.x, this.y, this.width, this.height, 25);
+    
+        fill(252, 245, 111);
+        triangle(this.triX1, this.triY3-3, this.triX2, this.triY1-3, this.triX3, this.triY1-3);        
+    };
+    
+    Button.prototype.isMouseInside = function() {
+    return  (mouseX > this.x) &&
+            (mouseX < this.x + this.width) && 
+            (mouseY > this.y) &&
+             (mouseY < this.y + this.height);
+    };
+    
+    Button.prototype.handleClick = function(){        
+        if(this.isMouseInside()){
+            this.onClick();
+        }
+    };
+    
+// ***END BUTTON OBJECT*** \\
+
+var difficultyUP = function(){
+    if (diffCounter < 5){
+        diffCounter++;
+    
+        for (var i = 0; i < spriteArray.length; i++){
+            spriteArray[i].difficulty = diffCounter;
+        }
+    
+        for (var i = 0; i < stickGroup.length ; i++){
+            stickGroup[i].difficulty = diffCounter;
+        }
+    
+        newHealth.difficulty = diffCounter;
+    }
+};
+
+var difficultyDOWN = function(){
+    if (diffCounter > 1){
+        diffCounter--;
+    
+        for (var i = 0; i < spriteArray.length; i++){
+            spriteArray[i].difficulty = diffCounter;
+        }
+    
+        for (var i = 0; i < stickGroup.length ; i++){
+            stickGroup[i].difficulty = diffCounter;
+        }
+
+        newHealth.difficulty = diffCounter;
+    }
+};
+
+var gameLoader = function(){
+    sceneLoader();
+    healthLoader();
+    stickGroupReset();
+    stickLoader();
+    spriteArray[spriteSelect].sticks = 0;
+};
+
+var startGame = new Button ({
+    x:175,
+    y:215,
+    onClick:function(){
+        gameLoader();
+        scene.startGame();
+        lastStickReset();
+    }, 
+    msg: function(){
+        fill(252, 245, 111);
+        textFont(sf, 15);
+        text("START", startGame.x+8,startGame.y+20);}, 
+        color: color(0)
+    });
+    
+var settings = new Button ({
+    x:startGame.x,
+    y:startGame.y+50,
+    onClick:function(){scene.levelNext();}, 
+    msg: function(){
+        fill(252, 245, 111);
+        textFont(sf,11);
+        text("SETTINGS", settings.x+7,settings.y+19);}, 
+    color: color(0)
+    });
+    
+var GOTOstartScreen = new Button ({
+    x:173,
+    y:348,
+    onClick:function(){scene.levelReset();}, 
+    msg: function(){
+        fill(252, 245, 111);
+        textFont(sf,15);
+        text("BACK", GOTOstartScreen.x+12,GOTOstartScreen.y+21);}
+    });
+    
+var GOTOlevelNext = new Button ({
+    x:175,
+    y:200,
+    onClick:function(){
+        scene.levelNext();
+        lastStickReset();
+    }, 
+    msg: function(){
+        fill(252, 245, 111);
+        textFont(sf,15);
+        text("NEXT", GOTOlevelNext.x+12,GOTOlevelNext.y+21);}
+    });
+    
+var GOTOlevelReset = new Button ({
+    x:175,
+    y:200,
+    onClick:function(){scene.levelReset();}, 
+    msg: function(){
+        fill(252, 245, 111);
+        textFont(sf);
+        textSize(15);
+        text("BACK", GOTOlevelReset.x+12,GOTOlevelReset.y+21);}
+});
+    
+var GOTOsprtUP = new Button({
+    x: 30, 
+    y: 240,
+    onClick: function(){
+        spriteUP();
+    }
+});
+
+var GOTOsprtDOWN = new Button({
+    x: 30, 
+    y: 280,
+    onClick: function(){
+        spriteDOWN();
+    }
+});
+
+var GOTOdiffUP = new Button({
+    x: 30,
+    y: 100,
+    onClick: function(){
+        difficultyUP();
+    }
+});
+
+var GOTOdiffDOWN = new Button({
+    x: 30,
+    y: 140,
+    onClick: function(){
+        difficultyDOWN();
+    }
+});
+
+var sceneZero = function(){ 
+    if (scene.current === 0){        
+        scene.level[scene.current].drawScene();
+    
+        startGame.x = 175;
+        settings.x = startGame.x;
+    
+        for(var i = 0; i < 120; i+=8){
+            image(getImage("creatures/Hopper-Jumping"),(3*i)-160,255-i,225,225);
+        }
+    
+        startGame.drawBLANK();
+        startGame.msg();
+        settings.drawBLANK();
+        settings.msg();
+        
+        noFill();
+        stroke(252, 245, 111);
+        for(var i = 0; i < 6 ; i++){
+            rect(92-i*2, 36-i*2, 236, 89);
+        }
+    
+        fill(252, 245, 111);
+        textFont(f, 30);
+        text("MAXIMUM", startGame.x-40, 60);
+        text("HOPPY BEAVER",startGame.x-80, 85);
+        text("EXTREME",startGame.x-40,110);
+
+        mouseClicked = function(){
+            startGame.handleClick();
+            settings.handleClick();
+        };
+    }
+};
+
+var sceneOne = function(){
+    if (scene.current === 1){
+        startGame.x = -400;
+        settings.x = -500;
+        scene.level[scene.current].drawScene();
+    
+        fill(scene.level[2].background);
+        stroke(252, 245, 111);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y-28, GOTOdiffUP.width*5.75, GOTOdiffUP.height*4);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y+28*4, GOTOdiffDOWN.width*5.75, GOTOdiffDOWN.height*4);
+    
+        fill(scene.level[2].groundColor);
+    
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y-30, GOTOdiffDOWN.width*5.75, 5);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y+95, GOTOdiffDOWN.width*5.75, 5);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y-30, 5, GOTOdiffDOWN.height*4.15);
+        rect(GOTOdiffUP.x*12.5, GOTOdiffUP.y-30, 5, GOTOdiffDOWN.height*4.15);
+    
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y+31*3.5, GOTOsprtDOWN.width*5.75, 5);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y+94*2.5, GOTOsprtDOWN.width*5.75, 5);
+        rect(GOTOdiffUP.x-10, GOTOdiffUP.y+30*3.65, 5, GOTOsprtDOWN.height*4.15);
+        rect(GOTOdiffUP.x*12.5, GOTOdiffUP.y+30*3.65, 5, GOTOsprtDOWN.height*4.15);
+    
+        noStroke();
+        GOTOdiffUP.drawUP();
+        GOTOdiffDOWN.drawDOWN();
+    
+        fill(0);
+        textFont(sf,20);
+        if(diffCounter === 1){
+            text("Easy", GOTOdiffUP.x*5, GOTOdiffUP.y+45);}
+        
+        else if(diffCounter === 2){
+            text("Normal", GOTOdiffUP.x*5, GOTOdiffUP.y+45);}
+        
+        else if(diffCounter === 3){
+            text("Hard", GOTOdiffUP.x*5, GOTOdiffUP.y+45);}
+    
+        else if(diffCounter === 4){
+            text("Extreme", GOTOdiffUP.x*5, GOTOdiffUP.y+45);}
+        
+        else {text("Impossible", GOTOdiffUP.x*5, GOTOdiffUP.y+45);}
+        
+        spriteArray[spriteSelect].draw();
+        spriteArray[spriteSelect].x = GOTOdiffUP.x*6.5;
+        spriteArray[spriteSelect].y = GOTOsprtUP.y+20;        
+        
+        GOTOsprtUP.drawUP();
+        GOTOsprtDOWN.drawDOWN();
+    
+        GOTOstartScreen.drawBLANK();
+        GOTOstartScreen.msg();
+    
+        mouseClicked = function(){
+            GOTOdiffUP.handleClick();
+            GOTOdiffDOWN.handleClick();
+            GOTOsprtUP.handleClick();
+            GOTOsprtDOWN.handleClick();
+            GOTOstartScreen.handleClick();
+        };
+        return true;
+    }
+    else{return false;}
+};
+
+var gameplay = function(){
+    if ((scene.current  < scene.level.length-1 && scene.current === 1 || scene.current > 1) && scene.level[scene.current].win === false){
+        for (var i = 0; i < stickGroup[scene.current].array.length; i++) {
+                stickGroup[scene.current].array[i].draw();
+            spriteArray[spriteSelect].checkForStickGrab(stickGroup[scene.current].array[i]);
+                
+                newHealth.barStickCheck(stickGroup[scene.current].array[i]);
+                
+                stickGroup[scene.current].array[i].fly();
+        }
+        
+        GOTOlevelNext.x = -400;
+        startGame.x = -400;
+        settings.x =-400;
+    }
+    
+    else if(scene.level[scene.current].win === true){
+        
+        scene.level[scene.current].text();
+        GOTOlevelNext.x = 175;
+    
+        mouseClicked = function(){
+            GOTOlevelNext.handleClick();
+        };
+    }
+};
+
+var VICTORY = function(){
+    if(LAST_STICK.x <= -diffCounter && newHealth.barVictory()){
+        
+        scene.current += 1;
+        lastStickReset();
+        
+        return true;
+    }
+    
+    else{return false;}
+    
+};
+
+var GAMEOVER = function(){        
+    if(newHealth.barGone()){
+           scene.level[scene.current].gameOVER();
+                spriteArray[spriteSelect].jump();
+            
+            if (keyIsPressed && keyCode === RIGHT) {
+                spriteArray[spriteSelect].x += 5;
+            } 
+            
+            if (keyIsPressed && keyCode === LEFT) {
+                spriteArray[spriteSelect].x -= 5;
+            }
+            
+            spriteArray[spriteSelect].draw();
+            
+            GOTOlevelReset.drawBLANK();
+            GOTOlevelReset.msg();
+            mouseClicked = function(){
+                GOTOlevelReset.handleClick();
+            };
+            
+            return true;
+    }
+    
+    else{return false;}
+};
+
+var RUN = function() {
+        VICTORY();
+      
+        scene.level[scene.current].drawScene();
+  
+        gameplay();    
+        
+        GOTOlevelNext.drawBLANK();
+        GOTOlevelNext.msg(); 
+        scene.level[scene.current].showScore(spriteArray[spriteSelect].sticks,stickGroup[scene.current].array,stickGroup[scene.current].array.length);
+    
+        spriteArray[spriteSelect].jump();
+        spriteArray[spriteSelect].draw();
+    
+        newHealth.barFill();
+        newHealth.barGone(spriteArray[spriteSelect].sticks);
+        newHealth.barVictory();
+        
+        GAMEOVER();        
+};
+    
+draw = function() {    
+    sceneZero();
+    sceneOne();
+   
+    if(scene.current > 1 && scene.current < scene.level.length){
+        RUN();
+    }
+};
